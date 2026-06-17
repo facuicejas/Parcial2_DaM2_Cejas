@@ -2,16 +2,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Collections.ObjectModel;
+using Parcial2.Services;
+using Parcial2.Views;
 using Parcial2.Messages;
 using Parcial2.Model;
-using Parcial2.Services;
-using System.Collections.ObjectModel;
-
+using Parcial2.DataBase;
 namespace Parcial2.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
         private readonly ApiService _api;
+        private readonly GameDataBase _database; //Agregado para el segundo parcial,
+                                                 //esto va a cargar los datos a SQLite
+
 
         [ObservableProperty]
         private ObservableCollection<Game> games = new();
@@ -24,9 +28,10 @@ namespace Parcial2.ViewModels
         [ObservableProperty]
         private string searchText = "";
 
-        public MainViewModel(ApiService api)
+        public MainViewModel(ApiService api, GameDataBase database)
         {
             _api = api;
+            _database = database; //Agregado para el Parcial 2, se implementa la base de datos
 
             WeakReferenceMessenger.Default.Register<GameAddedMessage>(
                 this,
@@ -46,7 +51,8 @@ namespace Parcial2.ViewModels
             {
                 Status = "Cargando juegos...";
 
-                var list = await _api.GetGames();
+                var list = await _database.GetGamesAsync(); //Agregado para el Parcial 2,
+                                                            //esto carga los datos de la base de datos SQLite
 
                 allGames = list;
 
@@ -57,7 +63,7 @@ namespace Parcial2.ViewModels
                     Games.Add(game);
                 }
 
-                Status = $"Se cargaron {Games.Count} juegos";
+                Status = $"Se cargaron {Games.Count} juego/s";
 
                 await Toast.Make("Lista cargada").Show();
             }
@@ -70,32 +76,54 @@ namespace Parcial2.ViewModels
         }
 
         [RelayCommand]
-        public void FilterGames()
+        public async Task FilterGames() //Esta funcion fue modificada para poder buscar los juegos de una forma mas directa de SQLite
         {
-            if (string.IsNullOrWhiteSpace(SearchText))
+            try
             {
+                List<Game> filtered;
+
+                if (string.IsNullOrWhiteSpace(SearchText))
+                {
+                    filtered = await _database.GetGamesAsync();
+                }
+                else
+                {
+                    filtered = await _database
+                        .SearchGamesAsync(SearchText);
+                }
+
                 Games.Clear();
 
-                foreach (var g in allGames)
-                    Games.Add(g);
+                foreach (var game in filtered)
+                {
+                    Games.Add(game);
+                }
+                Status = $"{Games.Count} resultado/s";
+                }
+                catch (Exception ex)
+                 {
+                Status = ex.Message;
+                await Toast.Make("Hubo un error en la busqueda")
+                    .Show();
+                 }
+        }
 
-                return;
-            }
+        [RelayCommand]
+        private async Task GoToAdd()
+        {
+            await Shell.Current.GoToAsync(nameof(AddGamePage));
+        }
 
-            var filtered = allGames
-                .Where(g =>
-                    g.Name != null &&
-                    g.Name.Contains(
-                        SearchText,
-                        StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            Games.Clear();
-
-            foreach (var g in filtered)
+        [RelayCommand]
+        private async Task GoToDetail(Game game)
+        {
+            var parameters = new Dictionary<string, object>
             {
-                Games.Add(g);
-            }
+                {"Game", game }
+            };
+            await Shell.Current.GoToAsync(
+                nameof(DetailPage),
+                parameters);
         }
     }
 }

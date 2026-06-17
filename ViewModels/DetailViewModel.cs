@@ -4,7 +4,7 @@ using Parcial2.Model;
 
 namespace Parcial2.ViewModels
 {
-    // Recibe parámetros desde Shell Navigation
+    // Recibe parametros desde Shell Navigation
     [QueryProperty(nameof(Game), "Game")]
     public partial class DetailViewModel : ObservableObject
     {
