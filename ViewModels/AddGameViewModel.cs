@@ -1,10 +1,9 @@
-﻿using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Parcial2.DataBase;
 using Parcial2.Messages;
 using Parcial2.Model;
+using Parcial2.Repositories;
 using Parcial2.Services;
 
 namespace Parcial2.ViewModels
@@ -12,14 +11,14 @@ namespace Parcial2.ViewModels
     public partial class AddGameViewModel : ObservableObject
     {
         private readonly ApiService _api;
-        private readonly GameDataBase _database; //Agregado para Parcial 2,
-                                                 //esto implementa la clase de la base de datos al programa
+        private readonly IGameRepository _repository; //Agregado para Parcial 2,
+                                                      //esto implementa la clase de la base de datos al programa
 
-        public AddGameViewModel(ApiService api,GameDataBase database) //Agregado para Parcial 2,
+        public AddGameViewModel(ApiService api,IGameRepository repository) //Agregado para Parcial 2,
                                                                       //Aca se le inyecta la nueva base de datos al programa
         {
             _api = api;
-            _database = database;
+            _repository = repository;
         }
 
         [ObservableProperty]
@@ -62,7 +61,7 @@ namespace Parcial2.ViewModels
                 };
 
                 await _api.AddGame(game);
-                await _database.SaveGameAsync(game); //Agregado para el segundo Parcial,
+                await _repository.SaveAsync(game); //Agregado para el segundo Parcial,
                                                      //esto va a insertar un nuevo registro dentro de la tabla Game
 
                 WeakReferenceMessenger.Default.Send(

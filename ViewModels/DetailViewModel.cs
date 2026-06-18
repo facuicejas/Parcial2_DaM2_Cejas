@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Parcial2.DataBase;
 using Parcial2.Model;
+using Parcial2.Repositories;
 
 
 namespace Parcial2.ViewModels
@@ -10,11 +11,11 @@ namespace Parcial2.ViewModels
     [QueryProperty(nameof(Game), "Game")]
     public partial class DetailViewModel : ObservableObject
     {
-        private readonly GameDataBase _database;
+        private readonly IGameRepository _repository;
 
-        public DetailViewModel(GameDataBase database)
+        public DetailViewModel(IGameRepository repository)
         {
-            _database = database;
+            _repository = repository;
         }
 
         [ObservableProperty]
@@ -28,7 +29,7 @@ namespace Parcial2.ViewModels
             if (Game == null)
                 return;
 
-            await _database.UpdateGameAsync(Game);
+            await _repository.UpdateAsync(Game);
 
             await Shell.Current.CurrentPage.DisplayAlertAsync(
                 "Todo correcto",

@@ -2,19 +2,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Collections.ObjectModel;
-using Parcial2.Services;
-using Parcial2.Views;
+using Parcial2.DataBase;
 using Parcial2.Messages;
 using Parcial2.Model;
-using Parcial2.DataBase;
+using Parcial2.Repositories;
+using Parcial2.Services;
+using Parcial2.Views;
+using System.Collections.ObjectModel;
 namespace Parcial2.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
         private readonly ApiService _api;
-        private readonly GameDataBase _database; //Agregado para el segundo parcial,
-                                                 //esto va a cargar los datos a SQLite
+        private readonly IGameRepository _repository; //Agregado para el segundo parcial,
+                                                      //esto va a cargar los datos a SQLite
 
 
         [ObservableProperty]
@@ -28,10 +29,10 @@ namespace Parcial2.ViewModels
         [ObservableProperty]
         private string searchText = "";
 
-        public MainViewModel(ApiService api, GameDataBase database)
+        public MainViewModel(ApiService api, IGameRepository repository)
         {
             _api = api;
-            _database = database; //Agregado para el Parcial 2, se implementa la base de datos
+            _repository = repository; //Agregado para el Parcial 2, se implementa la base de datos
 
          WeakReferenceMessenger.Default.Register<GameAddedMessage>(
                 this,
@@ -52,7 +53,7 @@ namespace Parcial2.ViewModels
             {
                 Status = "Cargando juegos...";
 
-                var list = await _database.GetGamesAsync(); //Agregado para el Parcial 2,
+                var list = await _repository.GetAllAsync(); //Agregado para el Parcial 2,
                                                             //esto carga los datos de la base de datos SQLite
 
                 allGames = list;
@@ -90,12 +91,12 @@ namespace Parcial2.ViewModels
 
                 if (string.IsNullOrWhiteSpace(SearchText))
                 {
-                    filtered = await _database.GetGamesAsync();
+                    filtered = await _repository.GetAllAsync();
                 }
                 else
                 {
-                    filtered = await _database
-                        .SearchGamesAsync(SearchText);
+                    filtered = await _repository
+                        .SearchAsync(SearchText);
                 }
 
                 Games.Clear();
@@ -131,7 +132,7 @@ namespace Parcial2.ViewModels
             if (!confirm)
                 return;
 
-            await _database.DeleteGameAsync(game);
+            await _repository.DeleteAsync(game);
 
             Games.Remove(game);
         }
