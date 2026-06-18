@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Parcial2.MainPage">
+
+    <VerticalStackLayout Padding="20" Spacing="10">
+
+        <Button Text="Cargar juegos"
+                Command="{Binding LoadGamesCommand}"
+                WidthRequest="400"
+                HorizontalOptions="Center"/>
+
+        <Button Text="Agregar juego"
+                Command="{Binding GoToAddCommand}"
+                WidthRequest="400"
+                HorizontalOptions="Center"/>
+
+        <Entry Placeholder="Buscar"
+               Text="{Binding SearchText}" 
+               WidthRequest="300"
+                HorizontalOptions="Center"/>
+
+        <Button Text="Buscar"
+                Command="{Binding FilterGamesCommand}"
+                WidthRequest="200"
+                HorizontalOptions="Center"/>
+
+        <Label Text="{Binding Status}" />
+
+        <CollectionView ItemsSource="{Binding Games}">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Border  Padding="10"
+                             Margin="5"
+                             StrokeShape="RoundRectangle 10"
+                             BackgroundColor="OrangeRed"
+                             HorizontalOptions="Center"
+                             WidthRequest="450">
+
+                        <VerticalStackLayout >
+                    
+                            <Label Text="{Binding Name}" FontAttributes="Bold"/>
+                            <Label Text="{Binding Genre}" />
+                            <Label Text="{Binding Developer}" />
+                            <Label Text="{Binding Publisher}"  />
+
+                            <HorizontalStackLayout Spacing="10"
+                                                     HorizontalOptions="Center">
+                                
+                            <Button Text="Borrar"
+                                    BackgroundColor="Red"
+                                    TextColor="White"
+                                    WidthRequest="200"
+                                    HorizontalOptions="Center"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                              Path=BindingContext.DeleteGameCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                            <Button
+                                   Text="Editar"
+                                   BackgroundColor="LightBlue"
+                                   TextColor="White"
+                                   WidthRequest="200"
+                                    HorizontalOptions="Center"
+                                   Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                   Path=BindingContext.GoToDetailCommand}"
+                                   CommandParameter="{Binding .}" />
+                                
+                               </HorizontalStackLayout> 
+                            
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </VerticalStackLayout>
+
+</ContentPage>  

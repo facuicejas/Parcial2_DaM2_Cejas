@@ -33,15 +33,16 @@ namespace Parcial2.ViewModels
             _api = api;
             _database = database; //Agregado para el Parcial 2, se implementa la base de datos
 
-            WeakReferenceMessenger.Default.Register<GameAddedMessage>(
+         WeakReferenceMessenger.Default.Register<GameAddedMessage>(
                 this,
                 (r, m) =>
                 {
                     Games.Insert(0, m.Game);
-                    allGames.Insert(0, m.Game);
                 });
 
-            LoadGamesCommand.Execute(null);
+            _ = LoadGames();
+            // LoadGamesCommand.Execute(null);
+                    
         }
 
         [RelayCommand]
@@ -65,13 +66,18 @@ namespace Parcial2.ViewModels
 
                 Status = $"Se cargaron {Games.Count} juego/s";
 
-                await Toast.Make("Lista cargada").Show();
+                // await Toast.Make("Lista cargada").Show();
             }
             catch (Exception ex)
             {
-                Status = ex.Message;
+                Status = ex.ToString();
 
-                await Toast.Make("Error al cargar").Show();
+                System.Diagnostics.Debug.WriteLine(
+                    "ERROR COMPLETO:");
+                System.Diagnostics.Debug.WriteLine(
+                    ex.ToString());
+
+                // await Toast.Make("Error al cargar").Show();
             }
         }
 
@@ -103,9 +109,31 @@ namespace Parcial2.ViewModels
                 catch (Exception ex)
                  {
                 Status = ex.Message;
-                await Toast.Make("Hubo un error en la busqueda")
-                    .Show();
+                //await Toast.Make("Hubo un error en la busqueda")
+                //    .Show();
                  }
+        }
+
+        //Agregado para el segundo Parcial esta funcion va a borrar un juego
+        [RelayCommand]
+        private async Task DeleteGame(Game game)
+        {
+            if (game == null)
+                return;
+
+            bool confirm =
+                    await Shell.Current.CurrentPage.DisplayAlertAsync(
+                    "Borrar",
+                    $"¿Queres borrar este juego: {game.Name}?",
+                    "Sí",
+                    "No");
+
+            if (!confirm)
+                return;
+
+            await _database.DeleteGameAsync(game);
+
+            Games.Remove(game);
         }
 
         [RelayCommand]

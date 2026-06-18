@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Parcial2.Views.AddGamePage"
+    Title="Agregar Juego">
+
+    <VerticalStackLayout Padding="20">
+
+        <Entry Placeholder="Nombre" Text="{Binding Name}"
+               WidthRequest="500"
+               Margin="5"/>
+
+        <Entry Placeholder="Genero" Text="{Binding Genre}"
+               WidthRequest="500"
+               Margin="5"/>
+
+        <Entry Placeholder="Desarrollador" Text="{Binding Developer}" 
+               WidthRequest="500"
+               Margin="5"/>
+
+        <Entry Placeholder="Publicador" Text="{Binding Publisher}" 
+               WidthRequest="500"
+               Margin="5"/>
+
+        <Button Text="Guardar"
+                Command="{Binding AddGameCommand}"
+                WidthRequest="500"
+                Margin="30"/>
+
+        <Label Text="{Binding Status}" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

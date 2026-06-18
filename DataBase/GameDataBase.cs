@@ -28,9 +28,16 @@ namespace Parcial2.DataBase
 
         public Task<int> SaveGameAsync(Game game)
         {
+            if (game.Id != 0)
+                return _database.UpdateAsync(game);
+
             return _database.InsertAsync(game);
         }
 
+       public Task<int> UpdateGameAsync(Game game)
+        {
+        return _database.UpdateAsync(game);
+        }
         public Task<int> DeleteGameAsync(Game game)
         {
             return _database.DeleteAsync(game);

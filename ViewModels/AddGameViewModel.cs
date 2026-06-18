@@ -45,8 +45,8 @@ namespace Parcial2.ViewModels
             {
                 Status = "Debe ingresar un nombre";
 
-                await Toast.Make("Falta el nombre del juego")
-                    .Show();
+               // await Toast.Make("Falta el nombre del juego")
+                    //.Show();
 
                 return;
             }
@@ -73,16 +73,16 @@ namespace Parcial2.ViewModels
 
                 Status = "Juego agregado correctamente";
 
-                await Toast.Make(
-                    $"Juego {game.Name} agregado")
-                    .Show();
+               // await Toast.Make(
+                 //   $"Juego {game.Name} agregado")
+                   // .Show();
             }
             catch (Exception ex)
             {
                 Status = ex.Message;
 
-                await Toast.Make("Error al guardar")
-                    .Show();
+              //  await Toast.Make("Error al guardar")
+                    //.Show();
             }
         }
     }
