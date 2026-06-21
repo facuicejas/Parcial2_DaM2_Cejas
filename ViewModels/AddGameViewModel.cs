@@ -10,11 +10,11 @@ namespace Parcial2.ViewModels
 {
     public partial class AddGameViewModel : ObservableObject
     {
-        private readonly ApiService _api;
+        private readonly IApiService _api;
         private readonly IGameRepository _repository; //Agregado para Parcial 2,
                                                       //esto implementa la clase de la base de datos al programa
 
-        public AddGameViewModel(ApiService api,IGameRepository repository) //Agregado para Parcial 2,
+        public AddGameViewModel(IApiService api, IGameRepository repository) //Agregado para Parcial 2,
                                                                       //Aca se le inyecta la nueva base de datos al programa
         {
             _api = api;

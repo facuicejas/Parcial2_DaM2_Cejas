@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 
 namespace Parcial2.Services
 {
-    public class ApiService
+    public class ApiService : IApiService
     {
         private readonly HttpClient _httpClient;
         

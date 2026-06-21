@@ -13,7 +13,7 @@ namespace Parcial2.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly ApiService _api;
+        private readonly IApiService _api;
         private readonly IGameRepository _repository; //Agregado para el segundo parcial,
                                                       //esto va a cargar los datos a SQLite
 
@@ -29,7 +29,7 @@ namespace Parcial2.ViewModels
         [ObservableProperty]
         private string searchText = "";
 
-        public MainViewModel(ApiService api, IGameRepository repository)
+        public MainViewModel(IApiService api, IGameRepository repository)
         {
             _api = api;
             _repository = repository; //Agregado para el Parcial 2, se implementa la base de datos
@@ -41,7 +41,7 @@ namespace Parcial2.ViewModels
                     Games.Insert(0, m.Game);
                 });
 
-            _ = LoadGames();
+            
             // LoadGamesCommand.Execute(null);
                     
         }

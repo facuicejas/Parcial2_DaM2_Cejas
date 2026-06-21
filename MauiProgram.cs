@@ -20,7 +20,7 @@ namespace Parcial2
                     FileSystem.AppDataDirectory,
                     "games.db3");
 
-            builder.Services.AddSingleton(new GameDataBase(dbPath));
+            
             //Esto permite que cualquier ViewModel
             //pueda usar la misma instancia de la base de datos
             //mediante la inyeccion de dependencias
@@ -40,7 +40,7 @@ namespace Parcial2
                 });
 
             // Services
-            builder.Services.AddSingleton<ApiService>();
+            builder.Services.AddSingleton<IApiService, ApiService>();
             builder.Services.AddSingleton(new GameDataBase(dbPath)); //Agregado para el segundo Parcial esto se usa para poder conectar SQLite al programa
             builder.Services.AddSingleton<IGameRepository,GameRepository>(); //Agregado para el segundo Parcial, esto sirve para que pueda funcionar el repository pattern
             
